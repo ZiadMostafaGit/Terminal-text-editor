@@ -29,6 +29,7 @@
   
   # Prerequisites
   1-Python 3.x
+  
   2-Curses library (usually comes pre-installed with Python)
   Usage
 #  Clone this repository :
