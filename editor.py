@@ -3,23 +3,22 @@ import argparse
 import sys
 
 class curser:
-    
-
-
-    def __init__(self, row=0, col=0 ):
+    def __init__(self, row, col,win ):
         self.row = row
         self.col = col
+        self.win=win
 
     def move_up(self):
         if self.row > 0:
             self.row -= 1
+        else:
+            self.row=self.win.n_row-1    
 
-    def move_down(self, buffer):
+    def move_down(self):
 
-        if self.row < len(buffer) - 1:
+        if self.row < self.win.n_row:
             self.row += 1
         else:
-            self.col=0
             self.row=0    
 
     def move_left(self,buffer):
@@ -34,17 +33,23 @@ class curser:
             self.col += 1
         else :
             self.col=0
-            self.move_down(buffer)    
+            self.move_down()    
 
     
     def move_tap_right(self, buffer):
         if self.col < len(buffer[self.row]):
-            self.col += 5      
+            self.col += 5
+        else:
+            self.col=0
+            self.move_down()           
 
    
-    def move_tap_left(self):
+    def move_tap_left(self,buffer):
         if self.col>0:
-            self.col-=5            
+            self.col-=5
+        else:
+            self.col=len(buffer[self.row-1])
+            self.move_up()                
 
 
 class  window:
@@ -65,9 +70,9 @@ def Moving_Mode(k,cur,buffer):
         elif k == curses.KEY_UP:
             cur.move_up()
         elif k == curses.KEY_DOWN:
-            cur.move_down(buffer)
+            cur.move_down()
         elif k==552:# the ctrl+left ascii
-            cur.move_tap_left()
+            cur.move_tap_left(buffer)
         elif k==567:#the ctrl +right ascii
             cur.move_tap_right(buffer)   
 
@@ -87,16 +92,11 @@ def main(stdscr):
 
     curses.curs_set(1)
     win = window(curses.LINES - 1, curses.COLS - 1)
-    cur = curser(0, 0)
+    cur = curser(0, 0,win)
 
     while True:
         stdscr.erase()
 
-        # Adjust cursor position if it exceeds window boundaries
-        if cur.row >= win.n_row:
-            cur.row = win.n_row - 1
-        if cur.col >= win.n_col:
-            cur.col = win.n_col - 1
 
         for row, line in enumerate(buffer[:win.n_row]):
             stdscr.addstr(row, 0, line[:win.n_col])
@@ -115,33 +115,6 @@ def main(stdscr):
 if __name__ == "__main__":
     curses.wrapper(main)
 
-
-
-# def main(stdscr):
-#     parser = argparse.ArgumentParser()
-#     parser.add_argument("filename")
-#     args = parser.parse_args()
-
-#     with open(args.filename) as f:
-#         buffer = f.readlines()
-
-#     curses.curs_set(1)
-#     win=window(curses.LINES - 1, curses.COLS - 1)
-#     cur=curser(0,0)
-#     while True:
-#         stdscr.erase()
-#         for row, line in enumerate(buffer[:win.n_row]):
-#             stdscr.addstr(row, 0, line[:win.n_col])
-#             stdscr.move(cur.row,cur.col)    
-
-#         k = stdscr.getch()
-#         Moving_Mode(k,cur,buffer)
-
-#         stdscr.move(cur.row,cur.col)        
-#         stdscr.refresh()
-
-# if __name__ == "__main__":
-#     curses.wrapper(main)
 
 
 
