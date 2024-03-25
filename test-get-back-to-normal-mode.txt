@@ -17,13 +17,6 @@ class Buffer:
 
     def __getitem__(self, index):
         return self.lines[index]
-    
-
-    def insert(self,cur,k):
-        row,col=cur.row,cur.col
-        current=self.lines.pop(row)
-        new=current[:col]+k+current[col:]
-        self.lines.insert(row,new)
 
 # ... def main(stdscr):
 
@@ -97,7 +90,7 @@ class  window:
 
 
 def Moving_Mode(k,cur,buffer):
-        if k == 27:  
+        if k == ord('q'):  
             sys.exit(0)
         elif k == curses.KEY_LEFT: 
             cur.move_left(buffer)
@@ -112,13 +105,8 @@ def Moving_Mode(k,cur,buffer):
         elif k==567:#the ctrl +right ascii
             cur.move_tap_right(buffer)   
 
-def Insert_Mode(stdscr,buffer,cur):
-    while True:
-                k=stdscr.getch()
-                if k==27:
-                    break
-                else:
-                    buffer.insert(cur,k)
+
+
 
 
 
@@ -130,34 +118,40 @@ def main(stdscr):
 
     with open(args.filename) as f:
         buffer = Buffer(f.read().splitlines())
+        
+        curses.endwin()
+        return buffer
 
-    curses.curs_set(1)
-    win = window(curses.LINES - 1, curses.COLS - 1)
-    cur = curser(0, 0,win)
+    # curses.curs_set(1)
+    # win = window(curses.LINES - 1, curses.COLS - 1)
+    # cur = curser(0, 0,win)
 
-    while True:
-        stdscr.erase()
+    # while True:
+    #     stdscr.erase()
 
 
-        for row, line in enumerate(buffer[:win.n_row]):
-            stdscr.addstr(row, 0, line[:win.n_col])
+    #     for row, line in enumerate(buffer[:win.n_row]):
+    #         stdscr.addstr(row, 0, line[:win.n_col])
 
-        stdscr.move(cur.row, cur.col)
-        stdscr.refresh()
        
 
+    #     stdscr.move(cur.row, cur.col)
+    #     stdscr.refresh()
 
-        k = stdscr.getch()
-        Moving_Mode(k, cur, buffer)
-        if k=="i":
-            Insert_Mode(stdscr,buffer,cur)
+    #     k = stdscr.getch()
+    #     Moving_Mode(k, cur, buffer)
 
-
-        stdscr.move(cur.row, cur.col)
-        stdscr.refresh()
+    #     stdscr.move(cur.row, cur.col)
+    #     stdscr.refresh()
+        
+                    
 
 if __name__ == "__main__":
-    curses.wrapper(main)
+    buffer=curses.wrapper(main)
+    print(buffer[0])
+    print(buffer[1])
+    print(buffer[2])
+    print("hello")
 
 
 
