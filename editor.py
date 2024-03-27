@@ -19,18 +19,17 @@ class Buffer:
         return self.lines[index]
     
 
-    def insert(self,cur,k):
+    def insert(self,cur,k,buffer,win):
         row,col=cur.row,cur.col
         current=self.lines.pop(row)
-        new=current[:col]+k+current[col:]
+        new=current[:col]+chr(k)+current[col:]
         self.lines.insert(row,new)
-
-# ... def main(stdscr):
-
-    
-
-    
-# ...
+        if cur.col < win.n_col-1:
+            cur.col += 1
+        else :
+            cur.col=0
+            cur.move_down()
+        
 
 class curser:
     def __init__(self, row, col,win ):
@@ -96,7 +95,7 @@ class  window:
 
 
 
-def Moving_Mode(k,cur,buffer):
+def Moving_Mode(k,cur,buffer,win):
         if k == 27:  
             sys.exit(0)
         elif k == curses.KEY_LEFT: 
@@ -112,13 +111,21 @@ def Moving_Mode(k,cur,buffer):
         elif k==567:#the ctrl +right ascii
             cur.move_tap_right(buffer)   
 
-def Insert_Mode(stdscr,buffer,cur):
-    while True:
-                k=stdscr.getch()
-                if k==27:
-                    break
-                else:
-                    buffer.insert(cur,k)
+        else:
+            buffer.insert(cur,k,buffer,win)
+
+
+
+def printing(buffer,cur,win,stdscr):
+    stdscr.erase()
+    for row, line in enumerate(buffer[:win.n_row]):
+            stdscr.addstr(row, 0, line[:win.n_col])
+
+    stdscr.move(cur.row, cur.col)
+    stdscr.refresh()
+
+
+
 
 
 
@@ -136,23 +143,10 @@ def main(stdscr):
     cur = curser(0, 0,win)
 
     while True:
-        stdscr.erase()
-
-
-        for row, line in enumerate(buffer[:win.n_row]):
-            stdscr.addstr(row, 0, line[:win.n_col])
-
-        stdscr.move(cur.row, cur.col)
-        stdscr.refresh()
        
-
-
+        printing(buffer,cur,win,stdscr)
         k = stdscr.getch()
-        Moving_Mode(k, cur, buffer)
-        if k=="i":
-            Insert_Mode(stdscr,buffer,cur)
-
-
+        Moving_Mode(k, cur, buffer,win)
         stdscr.move(cur.row, cur.col)
         stdscr.refresh()
 
