@@ -1,12 +1,6 @@
-import curses
 import argparse
+import curses
 import sys
-
-
-
-
-
-# ...
 
 class Buffer:
     def __init__(self, lines):
@@ -17,118 +11,108 @@ class Buffer:
 
     def __getitem__(self, index):
         return self.lines[index]
-    
 
-    def insert(self,cur,k,buffer,win):
-        row,col=cur.row,cur.col
-        current=self.lines.pop(row)
-        new=current[:col]+chr(k)+current[col:]
-        self.lines.insert(row,new)
-        if cur.col < win.n_col-1:
-            cur.col += 1
-        else :
-            cur.col=0
-            cur.move_down()
-        
+    def insert(self, cursor, string):
+        row, col = cursor.row, cursor.col
+        current = self.lines.pop(row)
+        new = current[:col] + string + current[col:]
+        self.lines.insert(row, new)
 
-class curser:
-    def __init__(self, row, col,win ):
+    def split(self, cursor):
+        row, col = cursor.row, cursor.col
+        current = self.lines.pop(row)
+        self.lines.insert(row, current[:col])
+        self.lines.insert(row + 1, current[col:])
+
+    def delete(self, cursor):
+        row, col = cursor.row, cursor.col
+        if (row, col) < (self.bottom, len(self[row])):
+            current = self.lines.pop(row)
+            if col < len(self[row]):
+                new = current[:col] + current[col + 1:]
+                self.lines.insert(row, new)
+            else:
+                next = self.lines.pop(row)
+                new = current + next
+                self.lines.insert(row, new)
+
+class Cursor:
+    def __init__(self, row=0, col=0, col_hint=None):
         self.row = row
-        self.col = col
-        self.win=win
+        self._col = col
+        self._col_hint = col if col_hint is None else col_hint
 
-    def move_up(self):
+    @property
+    def col(self):
+        return self._col
+
+    @col.setter
+    def col(self, col):
+        self._col = col
+        self._col_hint = col
+
+    def up(self, buffer):
         if self.row > 0:
             self.row -= 1
-        else:
-            self.row=self.win.n_row-1    
+            self._clamp_col(buffer)
 
-    def move_down(self):
-
-        if self.row < self.win.n_row:
+    def down(self, buffer,win):
+        if self.row < win.bottom:
             self.row += 1
-        else:
-            self.row=0    
+            self._clamp_col(buffer)
 
-    def move_left(self,buffer):
+    def left(self, buffer):
         if self.col > 0:
             self.col -= 1
-        else:
-            self.col=len(buffer[self.row-1])
-            self.move_up()    
+        elif self.row > 0:
+            self.row -= 1
+            self.col = len(buffer[self.row])
 
-    def move_right(self, buffer):
+    def right(self, buffer):
         if self.col < len(buffer[self.row]):
             self.col += 1
-        else :
-            self.col=0
-            self.move_down()    
+        elif self.row < buffer.bottom:
+            self.row += 1
+            self.col = 0
 
+    def _clamp_col(self, buffer):
+        self._col = min(self._col_hint, len(buffer[self.row]))
 
+class Window:
+    def __init__(self, n_rows, n_cols, row=0, col=0):
+        self.n_rows = n_rows
+        self.n_cols = n_cols
+        self.row = row
+        self.col = col
 
+    @property
+    def bottom(self):
+        return self.row + self.n_rows - 1
 
+    def up(self, cursor):
+        if cursor.row == self.row - 1 and self.row > 0:
+            self.row -= 1
 
+    def down(self, buffer, cursor):
+        if cursor.row == self.bottom + 1 and self.bottom < buffer.bottom:
+            self.row += 1
 
+    def horizontal_scroll(self, cursor, left_margin=5, right_margin=2):
+        n_pages = cursor.col // (self.n_cols - right_margin)
+        self.col = max(n_pages * self.n_cols - right_margin - left_margin, 0)
 
-    
-    def move_tap_right(self, buffer):
-        if self.col < len(buffer[self.row]):
-            self.col += 5
-        else:
-            self.col=0
-            self.move_down()           
+    def translate(self, cursor):
+        return cursor.row - self.row, cursor.col - self.col
 
-   
-    def move_tap_left(self,buffer):
-        if self.col>0:
-            self.col-=5
-        else:
-            self.col=len(buffer[self.row-1])
-            self.move_up()                
+def right(window, buffer, cursor):
+    cursor.right(buffer)
+    window.down(buffer, cursor)
+    window.horizontal_scroll(cursor)
 
-
-class  window:
-    def __init__(self,n_row,n_col) -> None:
-        self.n_row=n_row
-        self.n_col=n_col
-
-
-
-
-def Moving_Mode(k,cur,buffer,win):
-        if k == 27:  
-            sys.exit(0)
-        elif k == curses.KEY_LEFT: 
-            cur.move_left(buffer)
-        elif k == curses.KEY_RIGHT:
-            cur.move_right(buffer)
-        elif k == curses.KEY_UP:
-            cur.move_up()
-        elif k == curses.KEY_DOWN:
-            cur.move_down()
-        elif k==552:# the ctrl+left ascii
-            cur.move_tap_left(buffer)
-        elif k==567:#the ctrl +right ascii
-            cur.move_tap_right(buffer)   
-
-        else:
-            buffer.insert(cur,k,buffer,win)
-
-
-
-def printing(buffer,cur,win,stdscr):
-    stdscr.erase()
-    for row, line in enumerate(buffer[:win.n_row]):
-            stdscr.addstr(row, 0, line[:win.n_col])
-
-    stdscr.move(cur.row, cur.col)
-    stdscr.refresh()
-
-
-
-
-
-
+def left(window, buffer, cursor):
+    cursor.left(buffer)
+    window.up(cursor)
+    window.horizontal_scroll(cursor)
 
 def main(stdscr):
     parser = argparse.ArgumentParser()
@@ -138,25 +122,43 @@ def main(stdscr):
     with open(args.filename) as f:
         buffer = Buffer(f.read().splitlines())
 
-    curses.curs_set(1)
-    win = window(curses.LINES - 1, curses.COLS - 1)
-    cur = curser(0, 0,win)
+    window = Window(curses.LINES - 1, curses.COLS - 1)
+    cursor = Cursor()
 
     while True:
-       
-        printing(buffer,cur,win,stdscr)
-        k = stdscr.getch()
-        Moving_Mode(k, cur, buffer,win)
-        stdscr.move(cur.row, cur.col)
-        stdscr.refresh()
+        stdscr.erase()
+        for row, line in enumerate(buffer[window.row:window.row + window.n_rows]):
+            if row == cursor.row - window.row and window.col > 0:
+                line = "«" + line[window.col + 1:]
+            if len(line) > window.n_cols:
+                line = line[:window.n_cols - 1] + "»"
+            stdscr.addstr(row, 0, line)
+        stdscr.move(*window.translate(cursor))
+
+        k = stdscr.getkey()
+        if k == "q":
+            sys.exit(0)
+        elif k == "KEY_UP":
+            cursor.up(buffer)
+            window.up(cursor)
+            window.horizontal_scroll(cursor)
+        elif k == "KEY_DOWN":
+            cursor.down(buffer,window)
+            window.down(buffer, cursor)
+            window.horizontal_scroll(cursor)
+        elif k == "KEY_LEFT":
+            left(window, buffer, cursor)
+        elif k == "KEY_RIGHT":
+            right(window, buffer, cursor)
+        elif k == "\n":
+            buffer.split(cursor)
+            cursor.row += 1
+            cursor.col = 0
+        elif k == "\x7f":
+            cursor.left(buffer)
+            buffer.delete(cursor)
+        else:
+            buffer.insert(cursor, k)
 
 if __name__ == "__main__":
     curses.wrapper(main)
-
-
-
-
-
-
-
-   

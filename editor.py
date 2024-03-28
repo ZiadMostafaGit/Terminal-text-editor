@@ -87,10 +87,25 @@ class curser:
             self.move_up()                
 
 
-class  window:
-    def __init__(self,n_row,n_col) -> None:
-        self.n_row=n_row
-        self.n_col=n_col
+class window:
+
+    def __init__(self, n_rows, n_cols, row=0, col=0):
+        self.n_rows = n_rows
+        self.n_cols = n_cols
+        self.row = row
+        self.col = col
+
+    @property
+    def bottom(self):
+        return self.row + self.n_rows - 1
+
+    def up(self, cursor):
+        if cursor.row == self.row - 1 and self.row > 0:
+            self.row -= 1
+
+    def down(self, buffer, cursor):
+        if cursor.row == self.bottom + 1 and self.bottom < len(buffer) - 1:
+            self.row += 1
 
 
 
