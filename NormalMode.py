@@ -6,9 +6,8 @@ import sys
 
 
 def Action(k,cursor,buffer,window,args):
-     if k == 27:  
-            sys.exit(0)
-     elif k == curses.KEY_UP:
+
+     if k == curses.KEY_UP:
          cursor.up(buffer)
          window.up(cursor)
          window.horizontal_scroll(cursor)
@@ -36,11 +35,6 @@ def Action(k,cursor,buffer,window,args):
          
      elif k==567:
          cursor.tap_right(buffer,window)
-     elif k==19:
-      print("CTRL +S")
-      with open(args.filename, "w") as f:
-       f.write("\n".join(buffer.lines))
-
                  
      else:
             buffer.insert(cursor, k,window)

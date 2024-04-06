@@ -3,7 +3,7 @@
 class weightedquickunion:
      def __init__(self, sz):
         self.size = sz
-        self.Id = []
+        self.Id = []
         self.sz=[]
         for i in range(self.size):
             self.Id.append(i)
