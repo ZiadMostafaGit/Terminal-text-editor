@@ -1,12 +1,15 @@
 import argparse
 import curses
 import sys
+import myproject
 
 
 
 
-ss
-ziad mostafa elsiad 
+
+ziad
+mostafa
+elsiad 
 Action(k,cursor,buffer,window,args):
      if k == 27:  
             sys.exit(0)
@@ -212,5 +215,3 @@ if __name__ == "__main__":
     def horizontal_scroll(self, cursor, left_margin=5, right_margin=2):
         n_pages = cursor.col // (self.n_cols - right_margin)
         self.col = max(n_pages * self.n_cols - right_margin - left_margin, 0)
-
-

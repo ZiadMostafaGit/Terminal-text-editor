@@ -19,13 +19,15 @@ import NormalMode
 
 def Action(k,cursor,buffer,window,args):
 
-         if k == 27:  
+         if k == 113:  
             sys.exit(0)
 
 
          elif k==115:
-                   buffer.insert(cursor,1,window)
                    with open(args.filename, "w") as f:
                      f.write("\n".join(buffer.lines))
+                     
+
+
                      
 
