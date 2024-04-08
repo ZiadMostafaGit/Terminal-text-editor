@@ -1,18 +1,13 @@
-import argparse
-import curses
-import sys
-import Buffer
-import Window
-
-
 
 class Cursor:
     def __init__(self, row=0, col=0):
         self.row = row
         self.col = col
         self.col_hint=self.col
-
-         
+        self.start_row=0
+        self.start_col=0
+        self.end_row=0
+        self.end_col=0
         
 
     def up(self, buffer):
@@ -68,3 +63,12 @@ class Cursor:
            self.row += 1
            self.col = 0
          self.col_hint=self.col
+
+
+    def start_highlight(self):
+        
+        self.start_row,self.start_col=self.row,self.col
+
+
+    def end_highlight(self):
+        self.end_row,self.end_col=self.row,self.col    

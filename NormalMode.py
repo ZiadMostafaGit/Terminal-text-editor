@@ -1,9 +1,4 @@
-import argparse
 import curses
-import sys
-
-
-
 
 def Action(k,cursor,buffer,window,args):
 

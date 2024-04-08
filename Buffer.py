@@ -1,8 +1,3 @@
-import argparse
-import curses
-import sys
-import Window
-import Cursor
 
 class Buffer:
     def __init__(self, lines):
