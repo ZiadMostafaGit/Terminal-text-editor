@@ -38,5 +38,5 @@ def highlight(k,cursor,buffer,window,args,stdscr):
         loop(stdscr,buffer,window,cursor)
         k=stdscr.getch()
 
-    cursor.end_highlight() 
-
+    cursor.end_highlight()
+    

@@ -36,7 +36,7 @@ def main(stdscr):
             SuperMode.Action(k,cursor,buffer,window,args,stdscr)
 
 
-        elif highlight.is_shift_arrows(k):
+        elif help_func.is_shift_arrows(k):
             highlight.highlight(k,cursor,buffer,window,args,stdscr)    
                
 
