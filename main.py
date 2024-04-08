@@ -6,12 +6,9 @@ import Cursor
 import NormalMode
 import SuperMode
 import highlight
+import help_func 
 
 
-
-
-def is_tab_key(k):
-    return  k==9
 
 
 
@@ -34,7 +31,7 @@ def main(stdscr):
         highlight.loop(stdscr,buffer,window,cursor)
         k = stdscr.getch()
 
-        if is_tab_key(k):       
+        if help_func.is_tab_key(k):       
             k=stdscr.getch()
             SuperMode.Action(k,cursor,buffer,window,args,stdscr)
 

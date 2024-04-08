@@ -1,6 +1,6 @@
 import curses
 import NormalMode
-
+import help_func
 
 
 
@@ -16,13 +16,6 @@ def loop(stdscr,buffer,window,cursor):
 
 
 
-def is_shift_arrows(k):
-    return k in [336,337,393,402]
-
-
-# 336 is down 337 is up  393 is left and 402 is right
-
-
 
 
 
@@ -31,7 +24,7 @@ def is_shift_arrows(k):
 
 def highlight(k,cursor,buffer,window,args,stdscr):
     cursor.start_highlight()
-    while is_shift_arrows(k):
+    while help_func.is_shift_arrows(k):
         if k==336:
             k=curses.KEY_DOWN
         elif k==337:
