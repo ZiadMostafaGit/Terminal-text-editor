@@ -31,9 +31,9 @@ def highlight(k,cursor,buffer,window,args,stdscr):
                 k=curses.KEY_UP
         elif k==393:
                 k=curses.KEY_LEFT
-        else:
+        elif k==402:
             k=curses.KEY_RIGHT
-
+        
         NormalMode.Action(k,cursor,buffer,window,args)
         loop(stdscr,buffer,window,cursor)
         k=stdscr.getch()

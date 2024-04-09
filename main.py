@@ -14,6 +14,8 @@ import help_func
 
 
 
+
+
 def main(stdscr):
     parser = argparse.ArgumentParser()
     parser.add_argument("filename")
@@ -33,6 +35,7 @@ def main(stdscr):
 
         if help_func.is_tab_key(k):       
             k=stdscr.getch()
+            
             SuperMode.Action(k,cursor,buffer,window,args,stdscr)
 
 
@@ -43,8 +46,11 @@ def main(stdscr):
         else:
 
             NormalMode.Action(k,cursor,buffer,window,args)
+
+       
        
 
 if __name__ == "__main__":
-    curses.wrapper(main)
+   res= curses.wrapper(main)
+
  
