@@ -24,6 +24,7 @@ def loop(stdscr,buffer,window,cursor):
 
 def highlight(k,cursor,buffer,window,args,stdscr):
     cursor.start_highlight()
+    coped_part=None
     while help_func.is_shift_arrows(k):
         if k==336:
             k=curses.KEY_DOWN
@@ -33,7 +34,9 @@ def highlight(k,cursor,buffer,window,args,stdscr):
                 k=curses.KEY_LEFT
         elif k==402:
             k=curses.KEY_RIGHT
-        
+        elif k==67:
+             buffer.copy(cursor)
+
         NormalMode.Action(k,cursor,buffer,window,args)
         loop(stdscr,buffer,window,cursor)
         k=stdscr.getch()

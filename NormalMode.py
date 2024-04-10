@@ -1,5 +1,6 @@
 import curses
-
+import curses.ascii
+import sys
 def Action(k,cursor,buffer,window,args):
 
      if k == curses.KEY_UP:
@@ -18,6 +19,7 @@ def Action(k,cursor,buffer,window,args):
          cursor.right(buffer,window)
          window.down(buffer, cursor)
          window.horizontal_scroll(cursor)
+    
      elif k == 10:
          buffer.split(cursor)
          cursor.row += 1

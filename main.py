@@ -6,12 +6,11 @@ import Cursor
 import NormalMode
 import SuperMode
 import highlight
-import help_func 
+import help_func
 
 
 
-
-
+   
 
 
 
@@ -32,6 +31,8 @@ def main(stdscr):
         
         highlight.loop(stdscr,buffer,window,cursor)
         k = stdscr.getch()
+
+      
 
         if help_func.is_tab_key(k):       
             k=stdscr.getch()
