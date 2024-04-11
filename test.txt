@@ -9,7 +9,7 @@ import myproject
 
 ziad
 mostafa
-elsiad 
+elsiad xzxzbjzxb	
 Action(k,cursor,buffer,window,args):
      if k == 27:  
             sys.exit(0)
@@ -49,7 +49,6 @@ Action(k,cursor,buffer,window,args):
 class Buffer:
     def __init__(self, lines):
         self.lines = lines
-
     def __len__(self):
         return len(self.lines)
 
