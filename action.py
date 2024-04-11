@@ -5,9 +5,7 @@ import sys
 
 
 
-def is_tab_key(k):
-    return  k==9
-
+saved=False
 
 
 def loop(stdscr,buffer,window,cursor):
@@ -23,7 +21,55 @@ def loop(stdscr,buffer,window,cursor):
 
 
 def is_shift_arrows(k):
-    return k in [336,337,393,402,83,67,86]
+    return k in [336,337,393,402]
+
+
+
+
+def Super_action(k,cursor,buffer,window,args,stdscr):
+     
+
+    if k == 113:
+        if saved: 
+            sys.exit(0)
+
+
+        else:
+            #  Super_action(115,cursor,buffer,window,args,stdscr)
+             sys.exit(0)    
+
+
+
+    elif k==115:
+        with open(args.filename, "w") as f:
+            f.write("\n".join(buffer.lines))
+
+
+
+    elif k==97:
+      for i in range(2):
+         filename = "mycopy.txt"
+         with open(filename, "w") as file:
+                    
+                file.write(f"{cursor.start_row}\n")
+                
+                file.write(f"{cursor.end_row}\n")
+                
+                file.write(f"{cursor.start_col}\n")
+                   
+                file.write(f"{cursor.end_col}\n")
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def Action(k,cursor,buffer,window,args,stdscr):
@@ -58,15 +104,6 @@ def Action(k,cursor,buffer,window,args,stdscr):
      elif k==569:
          cursor.tap_right(buffer,window)
 
-     elif k == 113:
-            sys.exit(0)
-
-
-     elif k==115:
-        with open(args.filename, "w") as f:
-            f.write("\n".join(buffer.lines))
-
-
 
      elif  is_shift_arrows(k):
         cursor.start_highlight()
@@ -79,14 +116,18 @@ def Action(k,cursor,buffer,window,args,stdscr):
                     k=curses.KEY_LEFT
             elif k==402:
                 k=curses.KEY_RIGHT
-            elif k==67:
-                 buffer.copy(cursor)
 
-            Action(k,cursor,buffer,window,args)
+            Action(k,cursor,buffer,window,args,stdscr)
             loop(stdscr,buffer,window,cursor)
             k=stdscr.getch()
 
-        cursor.end_highlight()          
+        cursor.end_highlight()
+     
+     
+     
+     elif k==24:
+            buffer.copy(cursor)
+                         
                  
      else:
             buffer.insert(cursor, k,window)

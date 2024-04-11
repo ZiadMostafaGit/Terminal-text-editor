@@ -3,16 +3,17 @@ import curses
 import sys
 import myproject
 
+dsddsziadmsdnjsdfsd
 
 
+saving
 
-
-ziad
-mostafa
+ziad19191997715715715
+mostafa9111970522157
 elsiad xzxzbjzxb	
 Action(k,cursor,buffer,window,args):
      if k == 27:  
-            sys.exit(0)
+            91119137sys.exit(0)
      elif k == curses.KEY_UP:
          cursor.up(buffer)
          window.up(cursor)

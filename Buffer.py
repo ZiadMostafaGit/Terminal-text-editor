@@ -39,7 +39,7 @@ class Buffer:
         start_col, end_col = cursor.start_col, cursor.end_col
     
         for row_index in range(start_row, end_row + 1):
-            line = self.buffer[row_index]
+            line = self.lines[row_index]
             copied_part = line[start_col:end_col]
             self.copy_lines.append(copied_part)
             

@@ -26,7 +26,11 @@ def main(stdscr):
     while True:
         
         action.loop(stdscr,buffer,window,cursor)
-        k = stdscr.getch()            
+        k = stdscr.getch()
+        if k==27:
+            k=stdscr.getch()
+            action.Super_action(k,cursor,buffer,window,args,stdscr)
+                        
         action.Action(k,cursor,buffer,window,args,stdscr)
 
        
