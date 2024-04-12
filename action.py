@@ -50,14 +50,26 @@ def Super_action(k,cursor,buffer,window,args,stdscr):
       for i in range(2):
          filename = "mycopy.txt"
          with open(filename, "w") as file:
+             
+             
+             
+                size=len(buffer.copy_lines)
+                if size<=0:
+                    file.write(f"the copy_lines are empty")       
+                else:
+                    file.write(f"the copy has some thing and size is {size}\n")
+                    for i in range(size):
                     
-                file.write(f"{cursor.start_row}\n")
+                        file.write(buffer.copy_lines[i]+"\n")
                 
-                file.write(f"{cursor.end_row}\n")
                 
-                file.write(f"{cursor.start_col}\n")
+                # file.write(f"{cursor.start_row}\n")
+                
+                # file.write(f"{cursor.end_row}\n")
+                
+                # file.write(f"{cursor.start_col}\n")
                    
-                file.write(f"{cursor.end_col}\n")
+                # file.write(f"{cursor.end_col}\n")
 
 
 
@@ -91,18 +103,30 @@ def Action(k,cursor,buffer,window,args,stdscr):
          window.down(buffer, cursor)
          window.horizontal_scroll(cursor)
     
-     elif k == 10:
+
+     elif k == 10:#enter key to split
          buffer.split(cursor)
          cursor.row += 1
          cursor.col = 0
-     elif k == 263:
+         
+
+     elif k == 263:#backspace key to delete
          cursor.left(buffer)
          buffer.delete(cursor)
-     elif k==554:
+     
+
+
+     elif k==552:#ctrl+left arrow
+         
          cursor.tap_left(buffer)
          
-     elif k==569:
+
+
+     elif k==567:#ctrl+right arrow
          cursor.tap_right(buffer,window)
+
+
+
 
 
      elif  is_shift_arrows(k):
@@ -125,8 +149,17 @@ def Action(k,cursor,buffer,window,args,stdscr):
      
      
      
-     elif k==24:
+     elif k==24:#ctrl+x
             buffer.copy(cursor)
+            
+            
+            
+     elif k==22:
+         buffer.paste(cursor)
+               
+     elif k==1:#ctrl+a
+         
+         cursor.highlight_all(buffer)
                          
                  
      else:

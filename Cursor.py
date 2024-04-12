@@ -8,6 +8,8 @@ class Cursor:
         self.start_col=0
         self.end_row=0
         self.end_col=0
+        self.max_col=0
+        
         
 
     def up(self, buffer):
@@ -71,4 +73,16 @@ class Cursor:
 
 
     def end_highlight(self):
-        self.end_row,self.end_col=self.row,self.col    
+        self.end_row,self.end_col=self.row,self.col
+    
+    
+    
+    
+    def highlight_all(self,buffer):
+        self.start_row,self.start_col=0,0
+        
+        
+        for i in buffer:
+            if len(i)>self.max_col:
+                self.max_col=len(i)     
+        self.end_row,self.end_col=len(buffer)-1,self.max_col        
