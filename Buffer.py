@@ -23,6 +23,7 @@ class Buffer:
         current = self.lines[row]
         self.lines[row] = current[:col]
         self.lines.insert(row + 1, current[col:])
+        # cursor.down(self.lines)
 
     def delete(self, cursor):
         row, col = cursor.row, cursor.col
@@ -38,10 +39,19 @@ class Buffer:
         start_row, end_row = cursor.start_row, cursor.end_row
         start_col, end_col = cursor.start_col, cursor.end_col
         self.copied_text.clear()
-        for row_index in range(start_row, end_row + 1):
-            line = self.lines[row_index]
-            copied_part = line[start_col:end_col]
-            self.copied_text.append(copied_part)
+        
+        for row_index in range(start_row, end_row+1):
+            if row_index==end_row:
+                if len(self.lines[row_index])>0:
+                    line = self.lines[row_index]
+                    copied_part = line[start_col:end_col]
+                    self.copied_text.append(copied_part)
+                
+            else:
+                if len(self.lines[row_index])>0:        
+                    line = self.lines[row_index]
+                    self.copied_text.append(line)
+            
             
 
 
@@ -52,3 +62,6 @@ class Buffer:
             self.lines = self.lines[:row] + self.copied_text + self.lines[row:]
             cursor.row += len(self.copied_text)
             cursor.col = len(self.copied_text[-1])
+            
+            
+            

@@ -3,11 +3,30 @@ import curses
 import Buffer
 import Window
 import Cursor
-import action
+import sys
+import move
 
 
-   
+def refresh(stdscr,buffer,window,cursor):
+        stdscr.erase()
+        for row, line in enumerate(buffer[window.row:window.row + window.n_rows]):
+            if row == cursor.row - window.row and window.col > 0:
+                line = "«" + line[window.col + 1:]
+            if len(line) > window.n_cols:
+                line = line[:window.n_cols - 1] + "»"
+            stdscr.addstr(row, 0, line)
+        stdscr.move(*window.translate(cursor))
 
+
+def split (cursor,buffer):
+    buffer.split(cursor)
+    cursor.row += 1
+    cursor.col = 0
+
+
+def delete(cursor,buffer):
+     cursor.left(buffer)
+     buffer.delete(cursor)
 
 
 
@@ -25,16 +44,125 @@ def main(stdscr):
    
     while True:
         
-        action.loop(stdscr,buffer,window,cursor)
+        refresh(stdscr,buffer,window,cursor)
         k = stdscr.getch()
-        if k==27:
-            k=stdscr.getch()
-            action.Super_action(k,cursor,buffer,window,args,stdscr)
-                        
-        action.Action(k,cursor,buffer,window,args,stdscr)
+        
+        
+        #insert        
+        # insert        
+        if k == ord('i'):
+            while True:
+                k = stdscr.getch()
+                if k == 27:  # Esc char
+                    break  # Exit insert mode loop
+                elif k == 10:
+                    split(cursor,buffer)
+                elif k == curses.KEY_UP:
+                    move.up(buffer, cursor, window)
+                elif k == curses.KEY_DOWN:
+                    move.down(buffer, cursor, window)
+                elif k == curses.KEY_LEFT:
+                    move.left(buffer, cursor, window)
+                elif k == curses.KEY_RIGHT:
+                    move.right(buffer, cursor, window)
+                elif k == 552:  # ctrl+left arrow
+                    cursor.tap_left(buffer)
+                elif k == 567:  # ctrl+right arrow
+                    cursor.tap_right(buffer, window)
+                elif k == 263:
+                    delete(cursor, buffer)
+                else:
+                    buffer.insert(cursor, k, window)
+                refresh(stdscr, buffer, window, cursor)
 
-       
-       
+
+
+
+        #save
+        elif k==ord('s'):
+              with open(args.filename, "w") as f:
+                f.write("\n".join(buffer.lines))      
+    
+    
+    
+        #quit
+        elif k==ord('q'):
+            sys.exit(0)
+        
+        
+        
+        #moving
+        elif k==curses.KEY_UP:
+            move.up(buffer,cursor,window)
+        
+        
+        elif k==curses.KEY_DOWN:
+            move.down(buffer,cursor,window)
+        
+        elif k==curses.KEY_LEFT:
+            move.left(buffer,cursor,window)
+        
+        
+        elif k==curses.KEY_RIGHT:
+            move.right(buffer,cursor,window)
+        
+        elif k==552:#ctrl+left arrow
+         
+          cursor.tap_left(buffer)
+        
+        elif k==567:#ctrl+right arrow
+           cursor.tap_right(buffer,window)
+
+        
+        
+        
+        #highlight
+        elif k == ord('h'):
+            cursor.start_highlight()
+            while k != 27:
+                if k == curses.KEY_UP:
+                    move.up(buffer, cursor, window)
+                elif k == curses.KEY_DOWN:
+                    move.down(buffer, cursor, window)
+                elif k == curses.KEY_LEFT:
+                    move.left(buffer, cursor, window)
+                elif k == curses.KEY_RIGHT:
+                    move.right(buffer, cursor, window)
+                elif k == 552:  # ctrl+left arrow
+                    cursor.tap_left(buffer)
+                elif k == 567:  # ctrl+right arrow
+                    cursor.tap_right(buffer, window)
+                refresh(stdscr, buffer, window, cursor)
+                k = stdscr.getch()
+
+                if k == ord('c'):
+                    cursor.end_highlight()
+                    buffer.copy(cursor)
+                    break  # Exit the refresh if 'c' is pressed
+                
+            if k != ord('c'):
+                cursor.end_highlight()
+
+        
+        elif k==10:
+            split(cursor,buffer)
+            
+            
+        elif k== 263:
+            delete(cursor,buffer)
+        
+     
+        elif k==ord('c'):#ctrl+x
+            buffer.copy(cursor)
+        
+        
+        elif k==ord('v'):
+            buffer.paste(cursor)
+            
+        elif k==97:
+            cursor.highlight_all(buffer)            
+        
+        
 
 if __name__ == "__main__":
    res= curses.wrapper(main)
