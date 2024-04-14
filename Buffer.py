@@ -57,11 +57,21 @@ class Buffer:
 
 # To paste the copied text at a specific cursor position
     def paste(self, cursor):
-        if len(self.copied_text) is not 0:
+        if len(self.copied_text) != 0:
             row, col = cursor.row, cursor.col
             self.lines = self.lines[:row] + self.copied_text + self.lines[row:]
             cursor.row += len(self.copied_text)
             cursor.col = len(self.copied_text[-1])
+            
+            
+            
+            
+            
+
+
+
+
+            
             
             
             

@@ -5,6 +5,8 @@ import Window
 import Cursor
 import sys
 import move
+import os
+
 
 
 def refresh(stdscr,buffer,window,cursor):
@@ -31,12 +33,20 @@ def delete(cursor,buffer):
 
 
 def main(stdscr):
+    
+    
     parser = argparse.ArgumentParser()
     parser.add_argument("filename")
     args = parser.parse_args()
 
-    with open(args.filename) as f:
-        buffer = Buffer.Buffer(f.read().splitlines())
+    if os.path.exists(args.filename): 
+        with open(args.filename) as f:
+            buffer = Buffer.Buffer(f.read().splitlines())
+    else:
+        with open(args.filename, 'w+') as f:
+            f.write(f" \n")
+            f.seek(0)
+            buffer = Buffer.Buffer(f.read().splitlines())
 
     window =Window.Window(curses.LINES - 1, curses.COLS - 1)
     cursor = Cursor.Cursor()
