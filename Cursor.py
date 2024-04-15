@@ -12,18 +12,19 @@ class Cursor:
         
         
 
-    def up(self, buffer):
+    def up(self, buffer,lines_number):
         if self.row > 0:
             if len(buffer[self.row-1])==0:
-                self.col=0
+                
+                self.col=len(str(lines_number))
             else:
                 self.col=self.col_hint        
             self.row -= 1
 
-    def down(self, buffer):
+    def down(self, buffer,lines_number):
         if self.row < len(buffer) - 1:
             if len(buffer[self.row+1])==0:
-                self.col=0
+                self.col=len(str(lines_number))
             else:
                 self.col=self.col_hint    
             self.row += 1
