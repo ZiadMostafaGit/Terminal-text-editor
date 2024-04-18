@@ -7,21 +7,22 @@ import sys
 import move
 import os
 
-line_number=1
 
-def refresh(stdscr, buffer, window, cursor):
-    stdscr.erase()
-    
+ 
+ 
+def refresh(stdscr,buffer,window,cursor):
+        stdscr.erase()
+        for row, line in enumerate(buffer[window.row:window.row + window.n_rows]):
+            if row == cursor.row - window.row and window.col > 0:
+                line = "«" + line[window.col + 1:]
+            if len(line) > window.n_cols:
+                line = line[:window.n_cols - 1] + "»"
+            stdscr.addstr(row, 0, line)
+        stdscr.move(*window.translate(cursor))
 
-      # Initialize line number
-    for row, line in enumerate(buffer[window.row:window.row + window.n_rows]):
-        if row == cursor.row - window.row and window.col > 0:
-            line = "«" + line[window.col + 1:]
-        if len(line) > window.n_cols:
-            line = line[:window.n_cols - 1] + "»"
-        stdscr.addstr(row, 0, f"{line_number:3d} {line}")  # Display line number
-        line_number += 1  # Increment line number
-    stdscr.move(*window.translate(cursor))
+
+
+
 
 def split (cursor,buffer):
     buffer.split(cursor)
@@ -71,16 +72,16 @@ def main(stdscr):
                 elif k == 10:
                     split(cursor,buffer)
                 elif k == curses.KEY_UP:
-                    move.up(buffer, cursor, window,line_number)
+                    move.up(buffer, cursor, window)
                 elif k == curses.KEY_DOWN:
-                    move.down(buffer, cursor, window,line_number)
+                    move.down(buffer, cursor, window)
                 elif k == curses.KEY_LEFT:
                     move.left(buffer, cursor, window)
                 elif k == curses.KEY_RIGHT:
                     move.right(buffer, cursor, window)
-                elif k == 560:  # ctrl+left arrow
+                elif k == 554:  # ctrl+left arrow
                     cursor.tap_left(buffer)
-                elif k == 575:  # ctrl+right arrow
+                elif k == 569:  # ctrl+right arrow
                     cursor.tap_right(buffer, window)
                 elif k == 263:
                     delete(cursor, buffer)
@@ -106,11 +107,11 @@ def main(stdscr):
         
         #moving
         elif k==curses.KEY_UP:
-            move.up(buffer,cursor,window,line_number)
+            move.up(buffer,cursor,window)
         
         
         elif k==curses.KEY_DOWN:
-            move.down(buffer,cursor,window,line_number)
+            move.down(buffer,cursor,window)
         
         elif k==curses.KEY_LEFT:
             move.left(buffer,cursor,window)
@@ -119,11 +120,11 @@ def main(stdscr):
         elif k==curses.KEY_RIGHT:
             move.right(buffer,cursor,window)
         
-        elif k==560:#ctrl+left arrow
+        elif k==554:#ctrl+left arrow
          
           cursor.tap_left(buffer)
         
-        elif k==575:#ctrl+right arrow
+        elif k==569:#ctrl+right arrow
            cursor.tap_right(buffer,window)
 
         
@@ -134,16 +135,16 @@ def main(stdscr):
             cursor.start_highlight()
             while k != 27:
                 if k == curses.KEY_UP:
-                    move.up(buffer, cursor, window,line_number)
+                    move.up(buffer, cursor, window)
                 elif k == curses.KEY_DOWN:
-                    move.down(buffer, cursor, window,line_number)
+                    move.down(buffer, cursor, window)
                 elif k == curses.KEY_LEFT:
                     move.left(buffer, cursor, window)
                 elif k == curses.KEY_RIGHT:
                     move.right(buffer, cursor, window)
-                elif k == 560:  # ctrl+left arrow
+                elif k == 554:  # ctrl+left arrow
                     cursor.tap_left(buffer)
-                elif k == 575:  # ctrl+right arrow
+                elif k == 569:  # ctrl+right arrow
                     cursor.tap_right(buffer, window)
                 refresh(stdscr, buffer, window, cursor)
                 k = stdscr.getch()
@@ -180,15 +181,26 @@ def main(stdscr):
 if __name__ == "__main__":
    res= curses.wrapper(main)
 
- 
- 
- 
-# def refresh(stdscr,buffer,window,cursor):
-#         stdscr.erase()
-#         for row, line in enumerate(buffer[window.row:window.row + window.n_rows]):
-#             if row == cursor.row - window.row and window.col > 0:
-#                 line = "«" + line[window.col + 1:]
-#             if len(line) > window.n_cols:
-#                 line = line[:window.n_cols - 1] + "»"
-#             stdscr.addstr(row, 0, line)
-#         stdscr.move(*window.translate(cursor))
+
+
+
+# line_number=1
+
+# def refresh(stdscr, buffer, window, cursor):
+#     stdscr.erase()
+    
+
+#       # Initialize line number
+#     for row, line in enumerate(buffer[window.row:window.row + window.n_rows]):
+#         if row == cursor.row - window.row and window.col > 0:
+#             line = "«" + line[window.col + 1:]
+#         if len(line) > window.n_cols:
+#             line = line[:window.n_cols - 1] + "»"
+#         stdscr.addstr(row, 0, f"{line_number:3d} {line}")  # Display line number
+#         line_number += 1  # Increment line number
+#     stdscr.move(*window.translate(cursor))
+
+
+
+
+

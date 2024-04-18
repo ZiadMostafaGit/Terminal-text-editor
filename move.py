@@ -3,15 +3,15 @@
 
 
 
-def up(buffer,cursor,window,line_numer):
-    cursor.up(buffer,line_numer)
+def up(buffer,cursor,window):
+    cursor.up(buffer)
     window.up(cursor)
     window.horizontal_scroll(cursor)
     
     
 
-def down(buffer,cursor,window,line_numer):
-    cursor.down(buffer,line_numer)
+def down(buffer,cursor,window):
+    cursor.down(buffer)
     window.down(buffer,cursor)
     window.horizontal_scroll(cursor)
     
