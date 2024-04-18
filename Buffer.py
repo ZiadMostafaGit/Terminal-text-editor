@@ -55,6 +55,23 @@ class Buffer:
             
 
 
+    def cut(self, cursor):
+        start_row, end_row = cursor.start_row, cursor.end_row
+        start_col, end_col = cursor.start_col, cursor.end_col
+        self.copy(cursor)  # Call copy to store the text in clipboard
+
+        if start_row == end_row:
+            self.lines[start_row] = self.lines[start_row][:start_col] + self.lines[start_row][end_col:]
+        else:
+            self.lines[start_row] = self.lines[start_row][:start_col]
+            self.lines[end_row] = self.lines[end_row][end_col:]
+
+            if end_row > start_row + 1:
+                del self.lines[start_row + 1:end_row]
+
+
+
+
 # To paste the copied text at a specific cursor position
     def paste(self, cursor):
         if len(self.copied_text) != 0:

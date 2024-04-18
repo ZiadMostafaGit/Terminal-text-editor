@@ -154,8 +154,15 @@ def main(stdscr):
                     buffer.copy(cursor)
                     break  # Exit the refresh if 'c' is pressed
                 
-            if k != ord('c'):
+                if k==ord('x'):
+                    cursor.end_highlight()
+                    buffer.cut(cursor)
+                    break    
+
+            if k != ord('c') and k!=ord('x'):
                 cursor.end_highlight()
+
+            
 
         
         elif k==10:
@@ -199,8 +206,4 @@ if __name__ == "__main__":
 #         stdscr.addstr(row, 0, f"{line_number:3d} {line}")  # Display line number
 #         line_number += 1  # Increment line number
 #     stdscr.move(*window.translate(cursor))
-
-
-
-
 
