@@ -34,6 +34,21 @@ class Buffer:
         elif row < len(self) - 1:
             self.lines[row] = self.lines[row] + self.lines.pop(row + 1)
     
+
+
+
+    def delete_highlighted(self,cursor):
+        start_row, end_row = cursor.start_row, cursor.end_row
+        start_col, end_col = cursor.start_col, cursor.end_col
+        
+        self.lines=self.lines[:start_row]+self.lines[end_row-1:]
+
+
+
+
+
+
+
     
     def copy(self, cursor):
         start_row, end_row = cursor.start_row, cursor.end_row
