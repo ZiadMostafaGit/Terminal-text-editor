@@ -157,9 +157,13 @@ def main(stdscr):
                 if k==ord('x'):
                     cursor.end_highlight()
                     buffer.cut(cursor)
+                    break
+                if k==263:
+                    cursor.end_highlight()
+                    buffer.delete_highlighted(cursor)
                     break    
 
-            if k != ord('c') and k!=ord('x'):
+            if k != ord('c') and k!=ord('x')and k!=263:
                 cursor.end_highlight()
 
             

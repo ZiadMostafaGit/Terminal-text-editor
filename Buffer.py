@@ -4,6 +4,8 @@ class Buffer:
         self.lines = lines
         self.copied_text = []
 
+
+
     def __len__(self):
         return len(self.lines)
 
@@ -41,8 +43,8 @@ class Buffer:
         start_row, end_row = cursor.start_row, cursor.end_row
         start_col, end_col = cursor.start_col, cursor.end_col
         
-        self.lines=self.lines[:start_row]+self.lines[end_row-1:]
-
+        self.lines=self.lines[:start_row]+self.lines[end_row:]
+       
 
 
 
@@ -99,7 +101,8 @@ class Buffer:
             
             
             
-
+    def rewine(self,cursor):
+        pass
 
 
 
