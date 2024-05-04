@@ -191,23 +191,3 @@ def main(stdscr):
 
 if __name__ == "__main__":
    res= curses.wrapper(main)
-
-
-
-
-# line_number=1
-
-# def refresh(stdscr, buffer, window, cursor):
-#     stdscr.erase()
-    
-
-#       # Initialize line number
-#     for row, line in enumerate(buffer[window.row:window.row + window.n_rows]):
-#         if row == cursor.row - window.row and window.col > 0:
-#             line = "«" + line[window.col + 1:]
-#         if len(line) > window.n_cols:
-#             line = line[:window.n_cols - 1] + "»"
-#         stdscr.addstr(row, 0, f"{line_number:3d} {line}")  # Display line number
-#         line_number += 1  # Increment line number
-#     stdscr.move(*window.translate(cursor))
-
